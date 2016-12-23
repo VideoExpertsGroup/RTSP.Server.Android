@@ -616,6 +616,51 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 		config.setTransHeight(240);
 		config.setTransFps(1);
 		config.setTransFormat(MediaCaptureConfig.TYPE_VIDEO_RAW);
+		String key = "-----BEGIN RSA PRIVATE KEY-----\n" +
+                "MIICXQIBAAKBgQC6pKw/FG9ujxEJb5kRTRAoFNBNO0B7DP9LJ/ME6KI2JAC8utDH\n" +
+                "uhaEOU/UIFl+0uW80+Nl/BBPf6s1vrPjcDfbrUGcW1DOjsvGwPEjtrmH4jalnj2N\n" +
+                "kyZ7VSin1vVUl0EBTiFGJf4aBfPl2RhLQ7WoG24jvPjgorfjTLzpnIRkIwIDAQAB\n" +
+                "AoGAa+j3mYT0JETdQcpfAmy+0Z2vDWgbkMlj9Q0E6aqi1pCcSIHuYfuKNyp3qBqI\n" +
+                "A9Zlc3ZCfF1vBLe4wlse4HmqIP9M9ee+PfEuhJhJrj+ETMzz3KPSHrlCHrbYIsan\n" +
+                "sBL7Buq6J+TIfQdll9rZrPfvdR2P8WX8KxX7IjUSFIwlGkkCQQD0JBe1o4Z4HmMJ\n" +
+                "DPUAbBmXuLRjqHdALmdz48EysIl6ffbtHbttbrBCGMhnzcK8ls1KX95inojm/7FA\n" +
+                "FsBROBMHAkEAw7WXselRy16NfJHhnZPnH9JrCDrY8PbgD1q2bIbZzzMj9a1gJoBq\n" +
+                "ZOgSXbi3Ck9ZvuGQtKAuaUWYXvp7RcmTBQJBANinBttLyFLkNGKduvWq+HMpl/sw\n" +
+                "TtMH2wp+vL3s57NqASyey+rq5UNilsV3VS7ibD9qIAFISpkjovoKtpPcvRUCQQC4\n" +
+                "jwgl29ypx1nwDnZQLsk3xivvT+eDnZyAflAoGidO8XBI354b0OAElqGzRl0+2MPO\n" +
+                "cVMQMzpxRhNCBj63+jatAkB9jvvcMlxLJYheEAQq0fcBHKNTPFIMyEt7aJh2sUTb\n" +
+                "jzV40Dt3ecGSigFYT8lmzNKN5m5kSU5AWumWkkQ+Fs98\n" +
+                "-----END RSA PRIVATE KEY-----";
+	        String cert ="-----BEGIN RSA PRIVATE KEY-----\n" +
+                "MIICXQIBAAKBgQC6pKw/FG9ujxEJb5kRTRAoFNBNO0B7DP9LJ/ME6KI2JAC8utDH\n" +
+                "uhaEOU/UIFl+0uW80+Nl/BBPf6s1vrPjcDfbrUGcW1DOjsvGwPEjtrmH4jalnj2N\n" +
+                "kyZ7VSin1vVUl0EBTiFGJf4aBfPl2RhLQ7WoG24jvPjgorfjTLzpnIRkIwIDAQAB\n" +
+                "AoGAa+j3mYT0JETdQcpfAmy+0Z2vDWgbkMlj9Q0E6aqi1pCcSIHuYfuKNyp3qBqI\n" +
+                "A9Zlc3ZCfF1vBLe4wlse4HmqIP9M9ee+PfEuhJhJrj+ETMzz3KPSHrlCHrbYIsan\n" +
+                "sBL7Buq6J+TIfQdll9rZrPfvdR2P8WX8KxX7IjUSFIwlGkkCQQD0JBe1o4Z4HmMJ\n" +
+                "DPUAbBmXuLRjqHdALmdz48EysIl6ffbtHbttbrBCGMhnzcK8ls1KX95inojm/7FA\n" +
+                "FsBROBMHAkEAw7WXselRy16NfJHhnZPnH9JrCDrY8PbgD1q2bIbZzzMj9a1gJoBq\n" +
+                "ZOgSXbi3Ck9ZvuGQtKAuaUWYXvp7RcmTBQJBANinBttLyFLkNGKduvWq+HMpl/sw\n" +
+                "TtMH2wp+vL3s57NqASyey+rq5UNilsV3VS7ibD9qIAFISpkjovoKtpPcvRUCQQC4\n" +
+                "jwgl29ypx1nwDnZQLsk3xivvT+eDnZyAflAoGidO8XBI354b0OAElqGzRl0+2MPO\n" +
+                "cVMQMzpxRhNCBj63+jatAkB9jvvcMlxLJYheEAQq0fcBHKNTPFIMyEt7aJh2sUTb\n" +
+                "jzV40Dt3ecGSigFYT8lmzNKN5m5kSU5AWumWkkQ+Fs98\n" +
+                "-----END RSA PRIVATE KEY-----\n" +
+                "-----BEGIN CERTIFICATE-----\n" +
+                "MIICATCCAWoCCQCkiVNSr0w0DDANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJB\n" +
+                "VTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0\n" +
+                "cyBQdHkgTHRkMB4XDTE1MDcwODE2MjgzNVoXDTE2MDcwNzE2MjgzNVowRTELMAkG\n" +
+                "A1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0\n" +
+                "IFdpZGdpdHMgUHR5IEx0ZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAuqSs\n" +
+                "PxRvbo8RCW+ZEU0QKBTQTTtAewz/SyfzBOiiNiQAvLrQx7oWhDlP1CBZftLlvNPj\n" +
+                "ZfwQT3+rNb6z43A3261BnFtQzo7LxsDxI7a5h+I2pZ49jZMme1Uop9b1VJdBAU4h\n" +
+                "RiX+GgXz5dkYS0O1qBtuI7z44KK340y86ZyEZCMCAwEAATANBgkqhkiG9w0BAQsF\n" +
+                "AAOBgQAGOdsEThgYAd3LAV9xt8aYAEONMDivrlWxC849PX+PSh25mQXTPAsfEEP2\n" +
+                "4dWCxtkKaIMIRiYfcSCGqErtUVufB0jkwS+oE9/RIpmGFRh3zMH/NBsI4eNcjJwV\n" +
+                "R6G0eVEvNUdCPixHTYs/9VPzJ2MJgI+AsQPxC6/kg78SJAbcwA==\n" +
+                "-----END CERTIFICATE-----";
+		config.setSecureStreaming(true, cert, key);
+
 	}
 
 	protected void onPause()

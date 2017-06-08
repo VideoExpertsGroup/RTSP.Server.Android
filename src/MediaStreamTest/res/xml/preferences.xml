@@ -71,7 +71,13 @@
             android:key="audio_enable"
             android:summary="@string/settingsRecord_audioEnable_summary"
             android:title="@string/settingsRecord_audioEnable_title" />
-        
+
+          <CheckBoxPreference
+              android:defaultValue="false"
+              android:key="capture_screen"
+              android:summary=""
+              android:title="Capture Display instead of Camera" />
+
         <ListPreference
             android:entries="@array/audioBitrateArray"
             android:entryValues="@array/audioBitrateValues"

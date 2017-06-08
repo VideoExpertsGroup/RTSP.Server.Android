@@ -50,6 +50,13 @@ import veg.mediacapture.sdk.MediaCaptureConfig.CaptureModes;
 import veg.mediacapture.sdk.MediaCaptureConfig.CaptureVideoResolution;
 import veg.mediacapture.sdk.test.demo.R;
 
+import android.graphics.Bitmap;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import android.os.Looper;
+import java.io.BufferedOutputStream;
+import android.graphics.Matrix;
 
 
 public class MainActivity extends Activity implements MediaCaptureCallback
@@ -240,16 +247,128 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 				   capturer.StopTranscoding();
            }
         });*/
+
 		
+        /*if (mJPEG_ready) {
+            Log.e(TAG, "=OnCaptureReceiveData, mJPEG_ready");
+            StopTranscoding();
+            return 0;
+        }*/
+
+        if (buffer == null){
+            Log.e(TAG, "=OnCaptureReceiveData, buffer is null");
+            return 0;
+        }
+
+        if(type != 0){ // not video frame
+            Log.e(TAG, "=OnCaptureReceiveData, it's not video frame");
+            return 0;
+        }
+
+		String spath = getRecordPath();
+        if(spath == null){
+            Log.e(TAG, "=OnCaptureReceiveData spath is null");
+            //StopTranscoding();
+            return 0;
+        }
+
+        File filePreview = new File(getRecordPath(), "preview_"+pts+".jpg");
+        Log.e(TAG, "=OnCaptureReceiveData, filePreview " + filePreview.getAbsolutePath());
+        if(filePreview.exists()){
+            //Log.e(TAG, "=OnCaptureReceiveData, preview already exists");
+            //StopTranscoding();
+            //return 0;
+            filePreview.delete();
+        }
+
+		int width = capturer.getConfig().getTransWidth(); //320;
+		int height = capturer.getConfig().getTransHeight(); //240;
+        Log.v(TAG, "=OnCaptureReceiveData, buffer="+buffer+" type="+type+" size="+size+" pts="+pts);
+        Log.i(TAG, "=OnCaptureReceiveData, Send image buffer.capacity() " + buffer.capacity() );
+        Log.i(TAG, "=OnCaptureReceiveData, Send image buffer.capacity() expected " + (width* height*4) );
+        Log.i(TAG, "=OnCaptureReceiveData, Image width " + width);
+        Log.i(TAG, "=OnCaptureReceiveData, Image height " + height);
+
+        // Prepare image
+        /*try {
+            Bitmap bm = Bitmap.createBitmap(
+                    width,
+                    height,
+                    Bitmap.Config.ARGB_8888
+            );
+            buffer.rewind();
+            bm.copyPixelsFromBuffer(buffer);
+
+            ByteArrayOutputStream fOut = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
+            FileOutputStream filePreviewOutputStream = new FileOutputStream(filePreview);
+            filePreviewOutputStream.write(fOut.toByteArray());
+            filePreviewOutputStream.flush();
+            filePreviewOutputStream.close();
+            fOut.flush();
+            fOut.close();
+            File filePreviewCrop = new File(spath, "preview.jpg");
+			//mJPEG_ready = true;
+
+        } catch (IOException e) {
+            Log.e(TAG, "=OnCaptureReceiveData ", e);
+        }*/
+		BufferedOutputStream bos = null;
+		try {
+			bos = new BufferedOutputStream(new FileOutputStream(filePreview));
+			Bitmap bmp0 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+			bmp0.copyPixelsFromBuffer(buffer);
+
+			Matrix matrix = new Matrix();
+			matrix.preScale(-1, 1);
+			matrix.preRotate(180);
+			//matrix.postScale(width, height);
+			//matrix.postRotate(180);
+			Bitmap bmp = Bitmap.createBitmap(bmp0, 0, 0,width, height, matrix, true);
+			
+			bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+			bmp0.recycle();
+			bmp.recycle();
+			if (bos != null) bos.close();
+		} catch (IOException e) {
+			Log.e(TAG, "=OnCaptureReceiveData ", e);
+		}
+			
+
+        Log.e(TAG, "=OnCaptureReceiveData end ");
+        //StopTranscoding();
 		return 0;
 	}
 
-	@Override
+	private boolean opened = false;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != MediaCapture.PERMISSION_CODE) {
+            Toast.makeText(this, "Unknown request code: " + requestCode, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.i(TAG, "Get media projection with the new permission");
+
+		if (!opened) {
+			capturer.SetPermissionRequestResults(resultCode, data);
+			capturer.Open(null, this);
+			opened = true;
+		}
+    }
+
+
+    @Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		String  strUrl;
 
 		setTitle(R.string.app_name);
+
 		super.onCreate(savedInstanceState);
 
 		sMainActivity = this;
@@ -328,9 +447,12 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 
 		load_config();
 
-		capturer.Open(null, this);
+		capturer.RequestPermission(this);
 
-		mbuttonSettings = (ImageButton) findViewById(R.id.imageButtonMenu);
+		if (mConfig.getCaptureSource() == MediaCaptureConfig.CaptureSources.PP_MODE_CAMERA.val())
+			capturer.Open(null, this);
+
+        mbuttonSettings = (ImageButton) findViewById(R.id.imageButtonMenu);
 		mbuttonSettings.setSoundEffectsEnabled(false);
 		mbuttonSettings.setOnClickListener(
 				new View.OnClickListener() {
@@ -354,7 +476,6 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
 						if(capturer == null)
 							return;
 						if( !isRec() ){
@@ -596,11 +717,15 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 		}
 		config.setSecVideoFramerate(5);
 		config.setSecVideoKeyFrameInterval(2);
-		config.setUseSec(is_rtsp && is_secvideo);
+		//config.setUseSec(is_rtsp && is_secvideo);
 
-		misRecfileEnabled = settings.getBoolean("record_enable", false);
+		/*misRecfileEnabled = settings.getBoolean("record_enable", false);
 		if(is_rtsp)
-			misRecfileEnabled = false;
+			misRecfileEnabled = false;*/
+		misRecfileEnabled = true;
+		config.setUseSec(true);
+		config.setUseSecRecord(true);
+		config.setRecordPrefixSec("secondary");
 		config.setRecording(misRecfileEnabled);
 		int record_flags = get_record_flags();
 		int rec_split_time = ( (record_flags & PlayerRecordFlags.forType(PlayerRecordFlags.PP_RECORD_SPLIT_BY_TIME)) != 0)? 30:0; //30 sec	
@@ -610,7 +735,7 @@ public class MainActivity extends Activity implements MediaCaptureCallback
 		config.setRecordSplitSize(10); //in MB
 		
 		//transcoding
-		misTranscodingEnabled = false;//false;//settings.getBoolean("transcode_enable", true);
+		misTranscodingEnabled = false;//settings.getBoolean("transcode_enable", true);
 		config.setTranscoding(misTranscodingEnabled);
 		config.setTransWidth(320);
 		config.setTransHeight(240);
@@ -660,6 +785,13 @@ public class MainActivity extends Activity implements MediaCaptureCallback
                 "R6G0eVEvNUdCPixHTYs/9VPzJ2MJgI+AsQPxC6/kg78SJAbcwA==\n" +
                 "-----END CERTIFICATE-----";
 		config.setSecureStreaming(true, cert, key);
+
+		if (settings.getBoolean("capture_screen", false)) {
+			config.setCaptureSource(MediaCaptureConfig.CaptureSources.PP_MODE_VIRTUAL_DISPLAY.val());
+		}
+		else {
+			config.setCaptureSource(MediaCaptureConfig.CaptureSources.PP_MODE_CAMERA.val());
+		}
 
 	}
 

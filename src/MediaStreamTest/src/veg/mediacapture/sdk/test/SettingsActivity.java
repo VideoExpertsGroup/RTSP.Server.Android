@@ -38,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
 	SharedPreferences settings=null;
 	
 	CheckBoxPreference record_audio_enable = null;
+	CheckBoxPreference record_capture_screen = null;
 	ListPreference record_audioBitrate = null;
 	CheckBoxPreference record_enable = null;
 	//CheckBoxPreference transcode_enable = null;
@@ -159,7 +160,12 @@ public class SettingsActivity extends PreferenceActivity {
 		//record_audioChannels.setEnabled(isenabled);
 		//record_audioSampling.setEnabled(isenabled);
 	}
-	
+
+	void update_record_capture_screen(boolean isenabled){
+		record_capture_screen.setSummary(isenabled?"Screen Capture":"Camera Capture");
+	}
+
+
 	void update_streaming_rtmp_enable(boolean isenabled){
 		//streaming_urlrtmp.setEnabled(isenabled);
 		//streaming_urlipport.setEnabled(isenabled);
@@ -368,7 +374,13 @@ public class SettingsActivity extends PreferenceActivity {
 		record_audioBitrate.setSummary(sAudioBitrate+" kbps");
 
 		update_record_audio_enable(isaudio);
-		
+
+		record_capture_screen = (CheckBoxPreference) findPreference("capture_screen");
+		boolean iscaptureScreen = settings.getBoolean("capture_screen", false);
+
+		update_record_capture_screen(iscaptureScreen);
+
+
 		/*streaming_urlrtmp = findPreference("urlrtmp");
 		String surlrtmp = settings.getString("urlrtmp", "rtmp://54.173.34.172:1937/publish_demo/abc");
 		 
@@ -489,6 +501,15 @@ public class SettingsActivity extends PreferenceActivity {
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				Boolean isenable = (Boolean)newValue;
 				update_record_audio_enable(isenable.booleanValue());
+				set_record_changed();
+				return true;
+			}
+		});
+
+		record_capture_screen.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				Boolean isenable = (Boolean)newValue;
+				update_record_capture_screen(isenable.booleanValue());
 				set_record_changed();
 				return true;
 			}

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2010-2014 EVE GROUP PTE. LTD.
+  * Copyright (c) 2011-2018 VXG Inc.
  *
  */
 

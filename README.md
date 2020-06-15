@@ -8,9 +8,3 @@ Key features:
 *  Low latency for network stream – special API to control encoder latency.
 *  AAC and G.711 audio codecs
 
-
-<img src="http://www.videoexpertsgroup.com/git/RTSP.server/cap_sdk_1.png" alt="RTSP server 1" width="800">
-
-<img src="http://www.videoexpertsgroup.com/git/RTSP.server/cap_sdk_3.png" alt="RTSP server 3" width="500">
-
-<img src="http://www.videoexpertsgroup.com/git/RTSP.server/cap_sdk_2.png" alt="RTSP server 2" width="800">
